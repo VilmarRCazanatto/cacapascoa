@@ -1,0 +1,93 @@
+.body {
+  background-image: linear-gradient(
+    to right top,
+    #bc694c,
+    #ba647d,
+    #9670a1,
+    #667da9,
+    #4e8397
+  );
+  width: 100vw;
+  height: 100vh;
+}
+
+.backview {
+  background-color: #3338;
+
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.intro {
+  position: absolute;
+  width: 500vw;
+  height: 100vh;
+  display: flex;
+}
+
+.page {
+  position: relative;
+  background-color: #ddd;
+  background-image: url("assets/2.png");
+  background-size: 50%;
+
+  width: 84vw;
+  height: 76vh;
+  margin: 12vh 8vw;
+
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  padding: 10px 10px 40px 10px;
+  box-sizing: border-box;
+  transition: all 0.25s;
+}
+
+.page h2 {
+  width: 70%;
+  height: 60px;
+  color: #222;
+  line-height: 70px;
+  text-align: center;
+  background-image: url("assets/10.png");
+  background-size: 100% 100%;
+}
+.page img {
+  width: max-content;
+  height: 35vh;
+}
+.page p {
+  width: 100%;
+}
+
+.page .page_footer {
+  bottom: 20px;
+  padding: 18px 10px 18px 30px;
+  background-image: url("assets/8.png");
+  background-size: 100% 100%;
+  padding-bottom: 30px;
+}
+
+.page button {
+  position: absolute;
+
+  font-size: 15px;
+  padding: 5px 30px;
+  text-align: ce;
+  width: fit-content;
+  height: 35px;
+  background-color: transparent;
+  background-size: 100% 100%;
+  border: none;
+}
+.page .next {
+  right: 20px;
+  background-image: url("assets/7.png");
+}
+
+.page .prev {
+  background-image: url("assets/6.png");
+}
