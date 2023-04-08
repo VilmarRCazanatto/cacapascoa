@@ -8,12 +8,16 @@ import img14 from "./assets/14.png";
 import img15 from "./assets/15.png";
 import img16 from "./assets/16.png";
 import img17 from "./assets/17.png";
+import imghelp from "./assets/help.png";
 import "./App.css";
 
 function App() {
   const [introPage, setIntroPage] = useState(0);
   const [wasSeenIntro, setWasSeenIntro] = useState(false);
   const [ovosEncontradosCod, setOvosEncontradosCod] = useState<string[]>([]);
+  const [usadoDicas, setUsadoDicas] = useState<string[]>([]);
+  const remainingDicas =
+    3 - usadoDicas.length + Math.floor(ovosEncontradosCod.length / 4);
 
   const posImg = [
     [0, 0],
@@ -25,15 +29,33 @@ function App() {
   ];
 
   const listaOvos = [
-    { dica: "Cabeça de planta.", cod: "KJ" },
-    { dica: "Cabeça de planta.", cod: "KL" },
+    {
+      dica: ["Todas histórias são verdadeiras", "Cidade dos ossos"],
+      cod: "IT",
+    },
+    { dica: ["Cabeça de planta", "Nixo"], cod: "JP" },
+    { dica: ["Roupa com meu nome", "E bandeira do Brasil"], cod: "HE" },
+    { dica: ["UFO", "Presente de outro planeta"], cod: "EG" },
+    { dica: ["Caixa de animais voadores", "Livro"], cod: "GO" },
+    { dica: ["Ar quente", "Frita"], cod: "UW" },
+    { dica: ["Dinheiro pesado", "Pringles"], cod: "QK" },
+    { dica: ["Say my name!", "Roupa cristal azul"], cod: "GU" },
+    { dica: ["Pequeno bolo", "Forma"], cod: "OO" },
+    { dica: ["Saco com bico", "Confeite"], cod: "ME" },
+    { dica: ["Branco macio nasce numa planta", "Lata vermelha"], cod: "DU" },
+    { dica: ["Inicio de nossa relação", "Croasonho"], cod: "CJ" },
   ];
 
   useLayoutEffect(() => {
     setWasSeenIntro(
       JSON.parse(localStorage.getItem("wasSeenIntro") ?? "false")
     );
+    setUsadoDicas(JSON.parse(localStorage.getItem("usadoDicas") ?? "[]"));
+    setOvosEncontradosCod(
+      JSON.parse(localStorage.getItem("ovosEncontradosCod") ?? "[]")
+    );
   }, []);
+
   return (
     <div className="body">
       <div className="container">
@@ -159,37 +181,127 @@ function App() {
               </div>
             </div>
           </div>
-          <div>
+          <div className="main_container">
+            <div className="header">
+              <div className="dicas_count">
+                <span>Dicas</span>
+                <div>
+                  {remainingDicas}
+                  <img src={imghelp} />
+                </div>
+              </div>
+              <div className="ovos_counter">
+                <div>
+                  <span className="qtd_ovos_encontrados">
+                    {ovosEncontradosCod.length}
+                  </span>
+                  <span>/{listaOvos.length}</span>
+                </div>
+                <div className="progress_bar">
+                  <div
+                    style={{
+                      width: `${
+                        (ovosEncontradosCod.length * 100) / listaOvos.length
+                      }%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
             <div className="ovos_perdidos">
               {listaOvos.map((ovoPerdido, i) => (
                 <div
                   key={ovoPerdido.cod}
                   className="item_ovo"
-                  onClick={() => prompt("Codigo de validação:")}
+                  onClick={() => {
+                    if (ovosEncontradosCod.includes(ovoPerdido.cod)) {
+                      alert("Ovo já encontrado");
+                      return;
+                    }
+                    for (
+                      let anwser = prompt("Codigo de validação:");
+                      anwser !== null;
+                      anwser = prompt("Codigo de validação:")
+                    ) {
+                      if (anwser.trim().toUpperCase() === ovoPerdido.cod) {
+                        setOvosEncontradosCod([
+                          ...ovosEncontradosCod,
+                          ovoPerdido.cod,
+                        ]);
+                        localStorage.setItem(
+                          "ovosEncontradosCod",
+                          JSON.stringify([
+                            ...ovosEncontradosCod,
+                            ovoPerdido.cod,
+                          ])
+                        );
+                        return;
+                      } else alert("Codigo invalido");
+                    }
+                  }}
                 >
-                  <div
-                    className="icone_ovo"
-                    style={{
-                      backgroundPosition: `${posImg[i % 6][0]}px ${
-                        posImg[i % 6][1]
-                      }px`,
-                    }}
-                  />
-                  <p>{ovoPerdido.dica}</p>
+                  {ovosEncontradosCod.includes(ovoPerdido.cod) ? (
+                    <img src={img15} className="ovo_encontro_icone" />
+                  ) : (
+                    <div
+                      className="icone_ovo"
+                      style={{
+                        backgroundPosition: `${posImg[i % 6][0]}px ${
+                          posImg[i % 6][1]
+                        }px`,
+                      }}
+                    />
+                  )}
+                  <p className="ove_dica">
+                    {ovoPerdido.dica
+                      .slice(0, usadoDicas.includes(ovoPerdido.cod) ? 2 : 1)
+                      .map((dica, i) => (
+                        <span key={i}>{dica}</span>
+                      ))}
+                  </p>
+                  <div className="help_button">
+                    {!usadoDicas.includes(ovoPerdido.cod) &&
+                      !ovosEncontradosCod.includes(ovoPerdido.cod) && (
+                        <img
+                          src={imghelp}
+                          alt=""
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            if (remainingDicas <= 0)
+                              alert(
+                                "Você não tem mais dicas. Ache alguns ovos para ganhar mais."
+                              );
+                            else {
+                              setUsadoDicas([...usadoDicas, ovoPerdido.cod]);
+
+                              localStorage.setItem(
+                                "usadoDicas",
+                                JSON.stringify([...usadoDicas, ovoPerdido.cod])
+                              );
+                            }
+                          }}
+                        />
+                      )}
+                  </div>
                 </div>
               ))}
               <div
                 className="item_ovo"
-                onClick={() =>
-                  alert("Encontre todos os ovos para liberar a pista.")
-                }
+                onClick={() => {
+                  if (
+                    !listaOvos.every((ovo) =>
+                      ovosEncontradosCod.includes(ovo.cod)
+                    )
+                  )
+                    alert("Encontre todos os ovos para liberar a pista.");
+                }}
               >
                 <img src={img17} className="icone_key" />
-                <p>
+                <p className="ove_dica">
                   {listaOvos.every((ovo) =>
                     ovosEncontradosCod.includes(ovo.cod)
                   )
-                    ? "Reflete sua beleza."
+                    ? "Reflete sua beleza minha gostosinha."
                     : "?????"}
                 </p>
               </div>
